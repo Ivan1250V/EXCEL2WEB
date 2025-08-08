@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head><meta charset='UTF-8'><title>Reportes Dinámicos</title>
+<script>
+async function cargarIndex() {
+  const res = await fetch('index.json');
+  const index = await res.json();
+  document.getElementById('info').innerText =
+    `Total filas: ${index.totalFilas}, Bloques: ${index.bloques}`;
+  const select = document.getElementById('bloques');
+  index.archivos.forEach(file => {
+    const option = document.createElement('option');
+    option.value = file;
+    option.text = file;
+    select.appendChild(option);
+  });
+}
+async function cargarBloque() {
+  const file = document.getElementById('bloques').value;
+  const res = await fetch(file);
+  const data = await res.json();
+  const tabla = document.getElementById('tabla');
+  tabla.innerHTML = '';
+  data.forEach(row => {
+    const tr = document.createElement('tr');
+    for (const campo in row) {
+      const td = document.createElement('td');
+      td.innerText = row[campo];
+      tr.appendChild(td);
+    }
+    tabla.appendChild(tr);
+  });
+}
+window.onload = cargarIndex;
+</script></head>
+<body><h2>Reportes Dinámicos</h2>
+<div id='info'></div>
+<select id='bloques' onchange='cargarBloque()'></select>
+<table border='1' id='tabla'></table>
+</body></html>
